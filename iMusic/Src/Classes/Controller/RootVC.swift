@@ -76,7 +76,6 @@ class RootVC: UIViewController {
         view.dataSource = self
         view.separatorStyle = .none
         view.register(SongCell.self, forCellReuseIdentifier: "cell")
-        view.contentInsetAdjustmentBehavior = .always
         return view
     }()
     
