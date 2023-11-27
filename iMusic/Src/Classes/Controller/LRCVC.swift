@@ -234,6 +234,7 @@ class LRCVC: UIViewController {
                 break
             } else {
                 index = datasource.count - 1
+                break
             }
         }
         return index
