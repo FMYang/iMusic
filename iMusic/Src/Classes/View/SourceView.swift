@@ -43,6 +43,11 @@ class SourceView: UIView {
         case channel29  = "日本SPACE SHOWER榜"
         case channel30  = "Beatport电子舞曲榜"
         case channel31  = "小语种热歌榜"
+        
+        case channel32  = "周杰伦专区"
+        case channel33  = "我喜欢的"
+        case channel34  = "90后网络歌曲榜"
+        case channel35  = "许嵩专区"
     }
     
     class Section {
@@ -86,17 +91,21 @@ class SourceView: UIView {
         super.init(frame: frame)
         backgroundColor = .black.withAlphaComponent(0.5)
         
-        for i in 0..<3 {
+        // 全部
+        for i in 0..<4 {
             let section = Section()
             if i == 0 {
                 section.title = "热门榜单"
                 let sources: [Source] = [.channel1, .channel2, .channel3, .channel4, .channel5, .channel6, .channel7,
-                    .channel8, .channel9, .channel10, .channel11]
+                                         .channel8, .channel9, .channel10, .channel11]
                 section.rows = row(sources: sources, type: type)
             } else if i == 1 {
+                section.title = "我的歌单"
+                let sources: [Source] = [.channel33, .channel34, .channel32, .channel35]
+                section.rows = row(sources: sources, type: type)
+            } else if i == 2 {
                 section.title = "特色音乐榜"
-                let sources: [Source] = [.channel12, .channel13, .channel14, .channel15, .channel16, .channel17,
-                    .channel18, .channel19, .channel20, .channel21, .channel22]
+                let sources: [Source] = [.channel12, .channel13, .channel14, .channel15, .channel16, .channel17, .channel18, .channel19, .channel20, .channel21, .channel22]
                 section.rows = row(sources: sources, type: type)
             } else {
                 section.title = "全球榜"
@@ -106,6 +115,26 @@ class SourceView: UIView {
             }
             datasource.append(section)
         }
+        
+        // 定制
+//        for i in 0..<3 {
+//            let section = Section()
+//            if i == 0 {
+//                section.title = "热门榜单"
+//                let sources: [Source] = [.channel1, .channel2, .channel3, .channel4, .channel5, .channel6, .channel7,
+//                                         .channel8, .channel9]
+//                section.rows = row(sources: sources, type: type)
+//            } else if i == 1 {
+//                section.title = "我的歌单"
+//                let sources: [Source] = [.channel33, .channel34, .channel32, .channel35]
+//                section.rows = row(sources: sources, type: type)
+//            } else if i == 2 {
+//                section.title = "特色音乐榜"
+//                let sources: [Source] = [.channel20, .channel21, .channel22, .channel12, .channel13, .channel14, .channel15, .channel16, .channel17, .channel18, .channel19]
+//                section.rows = row(sources: sources, type: type)
+//            }
+//            datasource.append(section)
+//        }
         
         makeUI()
         

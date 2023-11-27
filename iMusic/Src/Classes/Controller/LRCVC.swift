@@ -18,6 +18,7 @@ class LRCVC: UIViewController {
     var datasource: [LRCLine] = [] {
         didSet {
             tableView.reloadData()
+            noDataLabel.isHidden = datasource.count > 0
         }
     }
     
@@ -25,7 +26,9 @@ class LRCVC: UIViewController {
         didSet {
             tableView.reloadData()
             if !isDraging {
-                tableView.scrollToRow(at: IndexPath(row: curPlayIndex, section: 0), at: .middle, animated: true)
+                if datasource.count > 0 && curPlayIndex < datasource.count {
+                    tableView.scrollToRow(at: IndexPath(row: curPlayIndex, section: 0), at: .middle, animated: true)
+                }
             }
         }
     }
@@ -131,6 +134,16 @@ class LRCVC: UIViewController {
         btn.setImage(UIImage(named: AudioPlayer.shared.playMode.imageName), for: .normal)
         btn.addTarget(self, action: #selector(playModeSwitchAction), for: .touchUpInside)
         return btn
+    }()
+    
+    lazy var noDataLabel: UILabel = {
+        let label = UILabel()
+        label.text = "暂无歌词"
+        label.textColor = .white
+        label.font = .systemFont(ofSize: 22)
+        label.textAlignment = .center
+        label.isHidden = true
+        return label
     }()
     
     override func viewDidLoad() {
@@ -259,6 +272,7 @@ class LRCVC: UIViewController {
             mode = 0
         }
         AudioPlayer.shared.playMode = AudioPlayer.PlayMode(rawValue: mode) ?? .list
+        AudioPlayer.shared.localPlayMode = AudioPlayer.PlayMode(rawValue: mode) ?? .list
         playModeButton.setImage(UIImage(named: AudioPlayer.shared.playMode.imageName), for: .normal)
     }
     
@@ -286,6 +300,7 @@ class LRCVC: UIViewController {
         view.addSubview(maxTimeLabel)
         view.addSubview(clockButton)
         view.addSubview(playModeButton)
+        view.addSubview(noDataLabel)
         
         backgroundView.snp.makeConstraints { make in
             make.edges.equalToSuperview()
@@ -350,6 +365,11 @@ class LRCVC: UIViewController {
             make.centerY.equalTo(nextButton)
             make.width.height.equalTo(50)
             make.right.equalTo(lastButton.snp.left).offset(-20)
+        }
+        
+        noDataLabel.snp.makeConstraints { make in
+            make.center.equalToSuperview()
+            make.width.equalTo(kScreenWidth-40)
         }
     }
 }

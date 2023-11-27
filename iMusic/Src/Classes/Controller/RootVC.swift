@@ -14,6 +14,8 @@ class RootVC: UIViewController {
     
     let interactor = Interactor()
     
+    var statusObservers: [NSKeyValueObservation?] = []
+    
     var mediaList = VLCMediaList(array: [])!
     
     var source: SourceView.Source = .channel1 {
@@ -74,6 +76,7 @@ class RootVC: UIViewController {
         view.dataSource = self
         view.separatorStyle = .none
         view.register(SongCell.self, forCellReuseIdentifier: "cell")
+        view.contentInsetAdjustmentBehavior = .always
         return view
     }()
     
@@ -92,15 +95,33 @@ class RootVC: UIViewController {
         activityView.tintColor = .gray
         return activityView
     }()
-
+    
+    lazy var retryButton: UIButton = {
+        let btn = UIButton()
+        btn.setTitle("加载失败，点击重试", for: .normal)
+        btn.setTitleColor(.black, for: .normal)
+        btn.titleLabel?.font = .systemFont(ofSize: 14)
+        btn.addTarget(self, action: #selector(retryAction), for: .touchUpInside)
+        btn.isHidden = true
+        return btn
+    }()
 
     override func viewDidLoad() {
         super.viewDidLoad()
         title = "iMusic"
         configNavation()
         makeUI()
-        addRefresh()
+//        addRefresh()
+        addKVO()
         source = localSource
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        if AudioPlayer.shared.curIndex < datasource.count {
+            tableView.scrollToRow(at: IndexPath(row: AudioPlayer.shared.curIndex, section: 0), at: .middle, animated: false)
+        }
     }
     
     func configNavation() {
@@ -122,6 +143,10 @@ class RootVC: UIViewController {
         }
     }
     
+    @objc func retryAction() {
+        loadData()
+    }
+    
     func addRefresh() {
         self.tableView.bindGlobalStyle(forHeadRefreshHandler: { [weak self] in
             self?.loadData()
@@ -132,6 +157,8 @@ class RootVC: UIViewController {
         view.addSubview(tableView)
         view.addSubview(songView)
         view.addSubview(activityView)
+        view.addSubview(retryButton)
+        
         tableView.snp.makeConstraints { make in
             make.edges.equalToSuperview()
         }
@@ -146,32 +173,56 @@ class RootVC: UIViewController {
         activityView.snp.makeConstraints { make in
             make.center.equalToSuperview()
         }
+        
+        retryButton.snp.makeConstraints { make in
+            make.center.equalToSuperview()
+            make.width.equalTo(kScreenWidth-40)
+            make.height.equalTo(40)
+        }
     }
     
     func loadData() {
         datasource = []
-        activityView.startAnimating()
-        APIService.request1(target: ListAPI.list(source), type: [Song].self) { [weak self] response in
-            guard let self = self else { return }
-            switch response.result {
-            case .success(let songs):
-                let filterData = songs.filter { $0.is_free_part == 0 && !$0.song_name.isEmpty }
-                self.datasource = self.filterFile(data: filterData)
-            case .failure(let err):
-                print(err)
-//                self.view.showToast("\(err.localizedDescription)")
-            }
-            self.tableView.headRefreshControl?.endRefreshing()
-            self.activityView.stopAnimating()
+        
+//        activityView.startAnimating()
+//        self.retryButton.isHidden = true
+//        APIService.request1(target: ListAPI.list(source), type: [Song].self) { [weak self] response in
+//            guard let self = self else { return }
+//            switch response.result {
+//            case .success(let songs):
+//                let filterData = songs.filter { $0.is_free_part == 0 && !$0.song_name.isEmpty }
+//                self.datasource = self.filterFile(data: filterData)
+//                self.retryButton.isHidden = true
+//            case .failure(let err):
+//                print(err)
+//                self.retryButton.isHidden = false
+//            }
+//            self.tableView.headRefreshControl?.endRefreshing()
+//            self.activityView.stopAnimating()
+//        }
+        
+        guard let url = Bundle.main.url(forResource: source.rawValue, withExtension: "json"),
+                let jsonData = try? Data(contentsOf: url) else {
+            return
         }
+        
+        if let data = try? JSONDecoder().decode([Song].self, from: jsonData) {
+            let filterData = data.filter { $0.is_free_part == 0 && !$0.song_name.isEmpty }
+            datasource = filterFile(data: filterData)
+        }
+        
+        tableView.layoutIfNeeded()
+        tableView.scrollToRow(at: IndexPath(row: 0, section: 0), at: .top, animated: true)
     }
     
     func filterFile(data: [Song]) -> [Song] {
         var list: [Song] = []
         for song in data {
-            if let path = Bundle.main.path(forResource: song.song_name, ofType: "mp3") {
-                if FileManager.default.fileExists(atPath: path) {
-                    list.append(song)
+            if song.song_name.count > 0 {
+                if let path = Bundle.main.path(forResource: song.song_name, ofType: "mp3") {
+                    if FileManager.default.fileExists(atPath: path) {
+                        list.append(song)
+                    }
                 }
             }
         }
@@ -182,11 +233,28 @@ class RootVC: UIViewController {
         let sourceView = SourceView(frame: UIScreen.main.bounds, type: source)
         sourceView.dismiss = { [weak self] source in
             if self?.source != source {
+                self?.songView.isHidden = true
+                AudioPlayer.shared.clearPlayingInfo()
                 self?.source = source
             }
         }
         sourceView.tag = 1001
         navigationController?.view.addSubview(sourceView)
+    }
+    
+    func addKVO() {
+        let indexObserver = AudioPlayer.shared.observe(\.curIndex, options: [.new]) { [weak self] model, change in
+            guard let self = self else { return }
+            DispatchQueue.main.async {
+                let index = AudioPlayer.shared.curIndex
+                self.datasource.forEach { $0.selected = false }
+                self.datasource[index].selected = true
+                self.tableView.reloadData()
+                
+                self.tableView.scrollToRow(at: IndexPath(row: index, section: 0), at: .middle, animated: true)
+            }
+        }
+        statusObservers.append(indexObserver)
     }
 }
 
@@ -244,18 +312,18 @@ extension RootVC: UIViewControllerTransitioningDelegate {
 extension RootVC {
     var localSource: SourceView.Source {
         get {
-            guard let channel = UserDefaults.standard.string(forKey: "localPlayMode") else { return .channel1 }
+            guard let channel = UserDefaults.standard.string(forKey: "localSource") else { return .channel1 }
             return SourceView.Source(rawValue: channel) ?? .channel1
         }
         set {
-            UserDefaults.standard.setValue(newValue.rawValue, forKey: "localPlayMode")
+            UserDefaults.standard.setValue(newValue.rawValue, forKey: "localSource")
             UserDefaults.standard.synchronize()
         }
     }
 }
 
 extension UIImage {
-    class func imageWithColor(color:UIColor) -> UIImage?{
+    class func imageWithColor(color:UIColor) -> UIImage? {
         let rect = CGRect.init(x:0, y:0, width: 1, height: 1)
         UIGraphicsBeginImageContext(rect.size)
         let context = UIGraphicsGetCurrentContext()!

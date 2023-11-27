@@ -53,11 +53,27 @@ class AudioPlayer: NSObject {
         playMode = localPlayMode
     }
     
+    var mediaImage: UIImage!
+    
     @objc dynamic var playState: VLCMediaPlayerState = .stopped
     @objc dynamic var time: Float = 0.0
     @objc dynamic var curIndex: Int = 0 {
         didSet {
-            updateNowPlayingInfo(lrc: curSong.song_name)
+            mediaImage = UIImage(named: "svg_kg_playpage__album_default_01")!
+            ImageCache.default.retrieveImageInDiskCache(forKey: AudioPlayer.shared.curSong.img, completionHandler: { [weak self]
+                result in
+                guard let self = self else { return }
+                switch result {
+                case .success(let image):
+                    if let image = image {
+                        self.mediaImage = image
+                        self.updateNowPlayingInfo(lrc: self.curSong.song_name)
+                    }
+                default:
+                    break
+                }
+            })
+            
             lrcData = LRCParse.parse(content: curSong.lrc)
         }
     }
@@ -70,10 +86,8 @@ class AudioPlayer: NSObject {
             switch playMode {
             case .list: playerList.repeatMode = .repeatAllItems
             case .single: playerList.repeatMode = .repeatCurrentItem
-            case .random: playerList.repeatMode = .doNotRepeat
+            case .random: playerList.repeatMode = .repeatAllItems
             }
-            
-            localPlayMode = playMode
         }
     }
     
@@ -112,6 +126,7 @@ class AudioPlayer: NSObject {
     
     // 锁屏信息
     func updateNowPlayingInfo(lrc: String) {
+        // 封面
         var dic: [String: Any] = [:]
         
         // 歌曲名
@@ -119,14 +134,11 @@ class AudioPlayer: NSObject {
         
         // 作者名
         dic[MPMediaItemPropertyArtist] = AudioPlayer.shared.curSong.author_name + " - " + AudioPlayer.shared.curSong.song_name
-        
-        // 封面
-        if let image = ImageCache.default.retrieveImageInMemoryCache(forKey: AudioPlayer.shared.curSong.img) {
-            let artwork = MPMediaItemArtwork(boundsSize: image.size) { size in
-                return image
-            }
-            dic[MPMediaItemPropertyArtwork] = artwork
+
+        let artwork = MPMediaItemArtwork(boundsSize: mediaImage.size) { [unowned self] size in
+            return self.mediaImage
         }
+        dic[MPMediaItemPropertyArtwork] = artwork
         
         // 歌曲时长
         let duration = Float(AudioPlayer.shared.curSong.timelength) / 1000.0
@@ -140,6 +152,11 @@ class AudioPlayer: NSObject {
         dic[MPNowPlayingInfoPropertyPlaybackRate] = 1.0
         
         MPNowPlayingInfoCenter.default().nowPlayingInfo = dic
+    }
+    
+    func clearPlayingInfo() {
+        pause()
+        MPNowPlayingInfoCenter.default().nowPlayingInfo = nil
     }
     
     func playOrPause() {
@@ -190,6 +207,8 @@ class AudioPlayer: NSObject {
     
     func playItem(index: Int) {
         curIndex = index
+        if curIndex < 0 { curIndex = 0 }
+        if curIndex > mediaList.count - 1 { curIndex = mediaList.count - 1 }
         playerList.playItem(at: NSNumber(integerLiteral: index))
     }
     
@@ -223,6 +242,12 @@ extension AudioPlayer: VLCMediaPlayerDelegate {
         let player = aNotification.object as! VLCMediaPlayer
         let state = player.state
         playState = state
+        
+        if state == .ended {
+            if playMode != .single {
+                playNext()
+            }
+        }
                 
 //        switch state {
 //        case .stopped:
@@ -251,8 +276,10 @@ extension AudioPlayer: VLCMediaPlayerDelegate {
         time = Float(truncating: player.time.value) / 1000
         
         let line = self.findCurPlayIndex(time: time)
-        let lrcLineText = lrcData[line].text
-        updateNowPlayingInfo(lrc: lrcLineText)
+        if line < lrcData.count {
+            let lrcLineText = lrcData[line].text
+            updateNowPlayingInfo(lrc: lrcLineText)
+        }
     }
     
     func findCurPlayIndex(time: Float) -> Int {

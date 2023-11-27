@@ -50,6 +50,18 @@ class SongCell: UITableViewCell {
 //        let roundProcessor = RoundCornerImageProcessor(cornerRadius: 8, targetSize: CGSize(width: 54, height: 54))
 //        iconImageView.kf.setImage(with: URL(string: song.img)!, placeholder: UIColor.createImage(color: .lightGray), options: [.processor(roundProcessor)])
         iconImageView.kf.setImage(with: URL(string: song.img)!, placeholder: UIImage(named: "album_placeholder"))
+        
+        if song.selected {
+            nameLabel.textColor = UIColor(valueRGB: 0x1aaef4)
+            authorLabel.textColor = UIColor(valueRGB: 0x1aaef4)
+            nameLabel.font = .boldSystemFont(ofSize: 16)
+        } else {
+            nameLabel.textColor = .black
+            authorLabel.textColor = .black
+            nameLabel.font = .systemFont(ofSize: 16)
+        }
+        
+        contentView.backgroundColor = song.selected ? UIColor(valueRGB: 0xe1e2e3).withAlphaComponent(0.2) : .clear
     }
     
     func makeUI() {
