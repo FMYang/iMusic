@@ -120,7 +120,10 @@ class SearchView: UIView {
     func search(text: String) {
         if !text.isEmpty {
             let list = AudioPlayer.shared.songs
-            datasource = list.filter { $0.song_name.contains(text) || $0.author_name.contains(text) }
+            datasource = list.filter {
+                $0.song_name.range(of: text, options: .caseInsensitive) != nil ||
+                $0.author_name.range(of: text, options: .caseInsensitive) != nil
+            }
         } else {
             datasource = []
         }
