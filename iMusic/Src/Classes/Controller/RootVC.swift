@@ -89,6 +89,13 @@ class RootVC: UIViewController {
         return btn
     }()
     
+    lazy var searchButton: UIButton = {
+        let btn = UIButton()
+        btn.setImage(UIImage(named: "cctop_search"), for: .normal)
+        btn.addTarget(self, action: #selector(searchAction), for: .touchUpInside)
+        return btn
+    }()
+    
     lazy var activityView: UIActivityIndicatorView = {
         let activityView = UIActivityIndicatorView(style: .medium)
         activityView.tintColor = .gray
@@ -134,10 +141,17 @@ class RootVC: UIViewController {
 //        navigationController?.navigationBar.scrollEdgeAppearance = appearance
         
         navigationController?.navigationBar.addSubview(sourceButton)
+        navigationController?.navigationBar.addSubview(searchButton)
                 
         sourceButton.snp.makeConstraints { make in
-            make.left.equalToSuperview().offset(10)
+            make.left.equalToSuperview().offset(20)
             make.width.equalTo(120)
+            make.top.bottom.equalToSuperview()
+        }
+        
+        searchButton.snp.makeConstraints { make in
+            make.right.equalToSuperview().offset(-10)
+            make.width.equalTo(60)
             make.top.bottom.equalToSuperview()
         }
     }
@@ -150,34 +164,6 @@ class RootVC: UIViewController {
         self.tableView.bindGlobalStyle(forHeadRefreshHandler: { [weak self] in
             self?.loadData()
         })
-    }
-    
-    func makeUI() {
-        view.addSubview(tableView)
-        view.addSubview(songView)
-        view.addSubview(activityView)
-        view.addSubview(retryButton)
-        
-        tableView.snp.makeConstraints { make in
-            make.edges.equalToSuperview()
-        }
-        
-        songView.snp.makeConstraints { make in
-            make.left.equalToSuperview().offset(10)
-            make.right.equalToSuperview().offset(-10)
-            make.height.equalTo(54)
-            make.bottom.equalToSuperview().offset(-kSafeAreaInsets.bottom)
-        }
-        
-        activityView.snp.makeConstraints { make in
-            make.center.equalToSuperview()
-        }
-        
-        retryButton.snp.makeConstraints { make in
-            make.center.equalToSuperview()
-            make.width.equalTo(kScreenWidth-40)
-            make.height.equalTo(40)
-        }
     }
     
     func loadData() {
@@ -210,8 +196,10 @@ class RootVC: UIViewController {
             datasource = filterFile(data: filterData)
         }
         
-        tableView.layoutIfNeeded()
-        tableView.scrollToRow(at: IndexPath(row: 0, section: 0), at: .top, animated: true)
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.25, execute: {
+            self.tableView.layoutIfNeeded()
+            self.tableView.scrollToRow(at: IndexPath(row: 0, section: 0), at: .top, animated: true)
+        })
     }
     
     func filterFile(data: [Song]) -> [Song] {
@@ -228,19 +216,6 @@ class RootVC: UIViewController {
         return list
     }
     
-    @objc func sourceAction() {
-        let sourceView = SourceView(frame: UIScreen.main.bounds, type: source)
-        sourceView.dismiss = { [weak self] source in
-            if self?.source != source {
-                self?.songView.isHidden = true
-                AudioPlayer.shared.clearPlayingInfo()
-                self?.source = source
-            }
-        }
-        sourceView.tag = 1001
-        navigationController?.view.addSubview(sourceView)
-    }
-    
     func addKVO() {
         let indexObserver = AudioPlayer.shared.observe(\.curIndex, options: [.new]) { [weak self] model, change in
             guard let self = self else { return }
@@ -255,6 +230,60 @@ class RootVC: UIViewController {
         }
         statusObservers.append(indexObserver)
     }
+    
+    // MARK: - action
+    @objc func sourceAction() {
+        let sourceView = SourceView(frame: UIScreen.main.bounds, type: source)
+        sourceView.dismiss = { [weak self] source in
+            if self?.source != source {
+                self?.songView.isHidden = true
+                AudioPlayer.shared.clearPlayingInfo()
+                self?.source = source
+            }
+        }
+        sourceView.tag = 1001
+        navigationController?.view.addSubview(sourceView)
+    }
+    
+    @objc func searchAction() {
+        let searchView = SearchView()
+        searchView.selectClosure = { [weak self] index in
+            guard let self = self else { return }
+            self.tableView.scrollToRow(at: IndexPath(row: index, section: 0), at: .middle, animated: true)
+            self.play(index: index)
+        }
+        navigationController?.view.addSubview(searchView)
+    }
+    
+    // MARK: - UI
+    func makeUI() {
+        view.addSubview(tableView)
+        view.addSubview(songView)
+        view.addSubview(activityView)
+        view.addSubview(retryButton)
+        
+        tableView.snp.makeConstraints { make in
+            make.edges.equalToSuperview()
+        }
+        
+        songView.snp.makeConstraints { make in
+            make.left.equalToSuperview().offset(10)
+            make.right.equalToSuperview().offset(-10)
+            make.height.equalTo(54)
+            make.bottom.equalToSuperview().offset(-kSafeAreaInsets.bottom)
+        }
+        
+        activityView.snp.makeConstraints { make in
+            make.center.equalToSuperview()
+        }
+        
+        retryButton.snp.makeConstraints { make in
+            make.center.equalToSuperview()
+            make.width.equalTo(kScreenWidth-40)
+            make.height.equalTo(40)
+        }
+    }
+
 }
 
 extension RootVC: UITableViewDelegate, UITableViewDataSource {

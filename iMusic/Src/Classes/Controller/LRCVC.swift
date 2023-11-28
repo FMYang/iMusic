@@ -113,7 +113,7 @@ class LRCVC: UIViewController {
         let slider = CustomSlider()
         slider.setThumbImage(UIImage(named: "thumb"), for: .normal)
         slider.minimumValue = 0.0
-        slider.maximumValue = 0.0
+        slider.maximumValue = 1.0
         slider.minimumTrackTintColor = .white
         slider.maximumTrackTintColor = .white.withAlphaComponent(0.3)
         slider.addTarget(self, action: #selector(sliderAction(slider:)), for: .valueChanged)
@@ -168,7 +168,6 @@ class LRCVC: UIViewController {
         
         let seconds = Float(song.timelength) / 1000.0
         maxTimeLabel.text = String.format(time: seconds)
-        slider.maximumValue = seconds
     }
     
     func addKVO() {
@@ -184,8 +183,8 @@ class LRCVC: UIViewController {
         let timeObserver = AudioPlayer.shared.observe(\.time, options: [.new]) { [weak self] model, change in
             guard let self = self else { return }
             DispatchQueue.main.async {
-                self.curPlayIndex = self.findCurPlayIndex(time: model.time)
-                self.slider.value = model.time
+                self.curPlayIndex = AudioPlayer.shared.lrcLineIndex
+                self.slider.value = AudioPlayer.shared.playerList.mediaPlayer.position
                 self.minTimeLabel.text = String.format(time: model.time)
             }
         }
@@ -222,24 +221,6 @@ class LRCVC: UIViewController {
         }
     }
     
-    func findCurPlayIndex(time: Float) -> Int {
-        var index = 0
-        for i in 0..<datasource.count {
-            let line = datasource[i]
-            let lineTime = Float(CMTimeGetSeconds(line.time))
-            if time <= lineTime {
-                if i > 0 {
-                    index = i - 1
-                }
-                break
-            } else {
-                index = datasource.count - 1
-                break
-            }
-        }
-        return index
-    }
-    
     // MARK: - action
     @objc func backAction() {
         dismiss(animated: true)
@@ -260,7 +241,7 @@ class LRCVC: UIViewController {
     }
     
     @objc func sliderAction(slider: UISlider) {
-        var position = slider.value / slider.maximumValue
+        var position = slider.value
         if position > 0.99 { position = 0.99 }
         AudioPlayer.shared.seek(position: position)
     }

@@ -48,6 +48,13 @@ class SourceView: UIView {
         case channel33  = "我喜欢的"
         case channel34  = "90后网络歌曲榜"
         case channel35  = "许嵩专区"
+        case channel36  = "mp3"
+        case channel37  = "xp英文歌单"
+        case channel38  = "xp中文歌单"
+        case channel39  = "王力宏"
+        case channel40  = "BEYOND"
+        case channel41  = "歌手经典歌曲"
+        case channel42  = "全部歌曲"
     }
     
     class Section {
@@ -92,7 +99,7 @@ class SourceView: UIView {
         backgroundColor = .black.withAlphaComponent(0.5)
         
         // 全部
-        for i in 0..<4 {
+        for i in 0..<5 {
             let section = Section()
             if i == 0 {
                 section.title = "热门榜单"
@@ -101,16 +108,19 @@ class SourceView: UIView {
                 section.rows = row(sources: sources, type: type)
             } else if i == 1 {
                 section.title = "我的歌单"
-                let sources: [Source] = [.channel33, .channel34, .channel32, .channel35]
+                let sources: [Source] = [.channel33, .channel34, .channel32, .channel35, .channel36, .channel39, .channel40,.channel41, .channel37, .channel38]
                 section.rows = row(sources: sources, type: type)
             } else if i == 2 {
                 section.title = "特色音乐榜"
                 let sources: [Source] = [.channel12, .channel13, .channel14, .channel15, .channel16, .channel17, .channel18, .channel19, .channel20, .channel21, .channel22]
                 section.rows = row(sources: sources, type: type)
-            } else {
+            } else if i == 3 {
                 section.title = "全球榜"
-                let sources: [Source] = [.channel23, .channel24, .channel25, .channel26, .channel27, .channel28,
-                    .channel29, .channel30, .channel31]
+                let sources: [Source] = [.channel23, .channel24, .channel25, .channel26, .channel27, .channel28, .channel30, .channel31]
+                section.rows = row(sources: sources, type: type)
+            } else {
+                section.title = "全部"
+                let sources: [Source] = [.channel42]
                 section.rows = row(sources: sources, type: type)
             }
             datasource.append(section)

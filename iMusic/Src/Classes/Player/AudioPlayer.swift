@@ -79,6 +79,7 @@ class AudioPlayer: NSObject {
     }
     
     var lrcData: [LRCLine] = []
+    var lrcLineIndex: Int = 0
     
     // 播放模式
     var playMode: PlayMode = .list {
@@ -180,28 +181,33 @@ class AudioPlayer: NSObject {
     }
     
     func playNext() {
-        if playMode == .random {
-            curIndex = randomIndex()
-        } else {
+//        if playMode == .random {
+//            curIndex = randomIndex()
+//        } else {
             if curIndex < mediaList.count - 1 {
                 curIndex += 1
             } else {
                 curIndex = 0
             }
-        }
+//        }
         playItem(index: curIndex)
     }
     
     func playPrevious() {
-        if playMode == .random {
-            curIndex = randomIndex()
-        } else {
+//        if playMode == .random {
+//            curIndex = randomIndex()
+//        } else {
             if curIndex > 0 {
                 curIndex -= 1
             } else {
                 curIndex = mediaList.count - 1
             }
-        }
+//        }
+        playItem(index: curIndex)
+    }
+    
+    func playRandom() {
+        curIndex = randomIndex()
         playItem(index: curIndex)
     }
     
@@ -230,6 +236,7 @@ class AudioPlayer: NSObject {
                 self.timer?.invalidate()
                 AudioPlayer.shared.pause()
                 self.clockTime = .close
+                exit(0)
             }
         }
         timer?.fire()
@@ -244,8 +251,10 @@ extension AudioPlayer: VLCMediaPlayerDelegate {
         playState = state
         
         if state == .ended {
-            if playMode != .single {
+            if playMode == .list {
                 playNext()
+            } else if playMode == .random {
+                playRandom()
             }
         }
                 
@@ -275,14 +284,15 @@ extension AudioPlayer: VLCMediaPlayerDelegate {
         let player = aNotification.object as! VLCMediaPlayer
         time = Float(truncating: player.time.value) / 1000
         
-        let line = self.findCurPlayIndex(time: time)
+        let line = self.findCurPlayLrcIndex(time: time)
         if line < lrcData.count {
+            lrcLineIndex = line
             let lrcLineText = lrcData[line].text
             updateNowPlayingInfo(lrc: lrcLineText)
         }
     }
     
-    func findCurPlayIndex(time: Float) -> Int {
+    func findCurPlayLrcIndex(time: Float) -> Int {
         var index = 0
         for i in 0..<lrcData.count {
             let line = lrcData[i]
@@ -292,8 +302,6 @@ extension AudioPlayer: VLCMediaPlayerDelegate {
                     index = i - 1
                 }
                 break
-            } else {
-                index = lrcData.count - 1
             }
         }
         return index

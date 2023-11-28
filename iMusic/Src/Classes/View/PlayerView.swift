@@ -18,6 +18,7 @@ class PlayerView: UIView {
         }
     }
     
+    var didAddAnimation = false
     var playOrPauseClosure: (()->Void)?
     var nextClosure: (()->Void)?
     var iconTapClosure: (()->Void)?
@@ -28,20 +29,23 @@ class PlayerView: UIView {
         view.layer.masksToBounds = true
         view.isUserInteractionEnabled = true
         view.image = UIImage(named: "svg_kg_playpage__album_default_01")
-        
-        let ges = UITapGestureRecognizer(target: self, action: #selector(iconTapAction))
-        view.addGestureRecognizer(ges)
-        
         return view
     }()
     
-    lazy var nameLabel: ScrollingLabel = {
-        let label = ScrollingLabel(frame: CGRectMake(0, 0, kScreenWidth-180, 54))
+    lazy var nameLabel: UILabel = {
+//        let label = ScrollingLabel(frame: CGRectMake(0, 0, kScreenWidth-180, 20))
+        let label = UILabel()
+        label.textColor = .black.withAlphaComponent(0.5)
+        label.font = .systemFont(ofSize: 16)
         label.isUserInteractionEnabled = true
-
-        let ges = UITapGestureRecognizer(target: self, action: #selector(iconTapAction))
-        label.addGestureRecognizer(ges)
-        
+        return label
+    }()
+    
+    lazy var lrcLabel: UILabel = {
+        let label = UILabel()
+        label.textColor = .black
+        label.font = .boldSystemFont(ofSize: 16)
+        label.text = ""
         return label
     }()
     
@@ -57,6 +61,20 @@ class PlayerView: UIView {
         btn.addTarget(self, action: #selector(nextAction), for: .touchUpInside)
         btn.setImage(UIImage(named: "miniapp_playbar_next"), for: .normal)
         return btn
+    }()
+    
+    lazy var tapView: UIView = {
+        let view = UIView()
+        view.backgroundColor = .clear
+        view.isUserInteractionEnabled = true
+        let ges = UITapGestureRecognizer(target: self, action: #selector(iconTapAction))
+        view.addGestureRecognizer(ges)
+        return view
+    }()
+    
+    lazy var progressView: ProgressView = {
+        let view = ProgressView()
+        return view
     }()
     
     var statusObservers: [NSKeyValueObservation?] = []
@@ -78,6 +96,10 @@ class PlayerView: UIView {
             guard let self = self else { return }
             DispatchQueue.main.async {
                 self.playing = model.playerList.mediaPlayer.isPlaying
+                
+                if model.playerList.mediaPlayer.state == .ended {
+                    self.progressView.progress = 0.0
+                }
             }
         }
         
@@ -90,6 +112,20 @@ class PlayerView: UIView {
             }
         }
         
+        let timeObserver = AudioPlayer.shared.observe(\.time, options: [.new]) { [weak self] model, change in
+            guard let self = self else { return }
+            DispatchQueue.main.async {
+                let index = AudioPlayer.shared.lrcLineIndex
+                let data = AudioPlayer.shared.lrcData
+                if index < data.count {
+                    let lrcLine = data[index]
+                    self.lrcLabel.text = lrcLine.text
+                }
+                
+                self.progressView.progress = CGFloat(AudioPlayer.shared.playerList.mediaPlayer.position)
+            }
+        }
+        statusObservers.append(timeObserver)
         statusObservers.append(statusObserver)
         statusObservers.append(indexObserver)
     }
@@ -97,21 +133,25 @@ class PlayerView: UIView {
     func config(song: Song) {
         iconImageView.kf.setImage(with: URL(string: song.img)!, placeholder: UIImage(named: "svg_kg_playpage__album_default_01"))
         nameLabel.text = song.song_name + " - " + song.author_name
+        lrcLabel.text = song.song_name
     }
     
     func startAnimation() {
-        iconImageView.layer.removeAllAnimations()
-        // 创建旋转动画
-        let rotationAnimation = CABasicAnimation(keyPath: "transform.rotation.z")
-        rotationAnimation.toValue = NSNumber(value: 2*Double.pi)
-        rotationAnimation.duration = 10.0
-        rotationAnimation.repeatCount = .greatestFiniteMagnitude
-        rotationAnimation.isRemovedOnCompletion = false
-        rotationAnimation.fillMode = .forwards
-        iconImageView.layer.add(rotationAnimation, forKey: "")
+        if !didAddAnimation {
+            iconImageView.layer.removeAllAnimations()
+            let rotationAnimation = CABasicAnimation(keyPath: "transform.rotation.z")
+            rotationAnimation.toValue = NSNumber(value: 2*Double.pi)
+            rotationAnimation.duration = 10.0
+            rotationAnimation.repeatCount = .greatestFiniteMagnitude
+            rotationAnimation.isRemovedOnCompletion = false
+            rotationAnimation.fillMode = .forwards
+            iconImageView.layer.add(rotationAnimation, forKey: "")
+            didAddAnimation = true
+        }
     }
     
     func stopAnimation() {
+        didAddAnimation = false
         iconImageView.layer.removeAllAnimations()
     }
     
@@ -130,8 +170,11 @@ class PlayerView: UIView {
     func makeUI() {
         addSubview(iconImageView)
         addSubview(nameLabel)
+        addSubview(lrcLabel)
         addSubview(playOrPauseButton)
         addSubview(nextButton)
+        addSubview(progressView)
+        addSubview(tapView)
         
         iconImageView.snp.makeConstraints { make in
             make.width.height.equalTo(54)
@@ -140,9 +183,16 @@ class PlayerView: UIView {
         
         nameLabel.snp.makeConstraints { make in
             make.left.equalTo(iconImageView.snp.right).offset(15)
-            make.centerY.equalToSuperview()
+            make.bottom.equalToSuperview().offset(-5)
             make.right.equalTo(playOrPauseButton.snp.left).offset(-10)
-            make.height.equalTo(54)
+            make.height.equalTo(20)
+        }
+        
+        lrcLabel.snp.makeConstraints { make in
+            make.left.equalTo(iconImageView.snp.right).offset(15)
+            make.top.equalToSuperview().offset(5)
+            make.right.equalTo(playOrPauseButton.snp.left).offset(-10)
+            make.height.equalTo(20)
         }
         
         playOrPauseButton.snp.makeConstraints { make in
@@ -155,6 +205,17 @@ class PlayerView: UIView {
             make.width.height.equalTo(40)
             make.centerY.equalToSuperview()
             make.right.equalToSuperview().offset(-20)
+        }
+        
+        tapView.snp.makeConstraints { make in
+            make.left.top.bottom.equalToSuperview()
+            make.right.equalTo(playOrPauseButton.snp.left).offset(-10)
+        }
+        
+        progressView.snp.makeConstraints { make in
+            make.left.right.equalTo(lrcLabel)
+            make.bottom.equalToSuperview()
+            make.height.equalTo(2)
         }
     }
 }

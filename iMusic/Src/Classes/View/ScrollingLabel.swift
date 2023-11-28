@@ -21,7 +21,7 @@ class ScrollingLabel: UIView, UIScrollViewDelegate {
     
     lazy var textLabel: UILabel = {
         let label = UILabel()
-        label.textColor = .black
+        label.textColor = .black.withAlphaComponent(0.5)
         label.font = .systemFont(ofSize: 16)
         return label
     }()
@@ -41,7 +41,7 @@ class ScrollingLabel: UIView, UIScrollViewDelegate {
                 textLabel.textAlignment = .left
                 endAnimation()
             } else {
-                startAnimation()
+//                startAnimation()
             }
         }
     }
