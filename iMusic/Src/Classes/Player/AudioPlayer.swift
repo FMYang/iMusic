@@ -302,6 +302,8 @@ extension AudioPlayer: VLCMediaPlayerDelegate {
                     index = i - 1
                 }
                 break
+            } else {
+                index = lrcData.count - 1
             }
         }
         return index
