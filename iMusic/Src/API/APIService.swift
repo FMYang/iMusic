@@ -108,13 +108,12 @@ class APIService {
                 let response = DataResponse<T, AFError>(request: request, response: nil, data: nil, metrics: nil, serializationDuration: 0.0, result: .success(item))
                 publisher.send(response)
                 publisher.send(completion: .finished)
-                return publisher.eraseToAnyPublisher()
             } catch {
                 let response = DataResponse<T, AFError>(request: request, response: nil, data: nil, metrics: nil, serializationDuration: 0.0, result: .failure(AFError.responseSerializationFailed(reason: .jsonSerializationFailed(error: error))))
                 publisher.send(response)
                 publisher.send(completion: .finished)
-                return publisher.eraseToAnyPublisher()
             }
+            return publisher.eraseToAnyPublisher()
         }
         
         // real request

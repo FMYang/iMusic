@@ -27,16 +27,12 @@ extension ListAPI: APITarget {
     var sampleData: Data? {
         switch self {
         case .list(let source):
-//            if source == .channel1 {
-                guard let url = Bundle.main.url(forResource: source.rawValue, withExtension: "json"),
-                      let jsonData = try? Data(contentsOf: url) else {
-                    return nil
-                }
-                
-                return jsonData
-//            } else {
-//                return nil
-//            }
+            guard let url = Bundle.main.url(forResource: source.rawValue, withExtension: "json"),
+                  let jsonData = try? Data(contentsOf: url) else {
+                return nil
+            }
+            
+            return jsonData
         }
     }
 }

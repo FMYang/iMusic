@@ -48,7 +48,7 @@ class SongCell: UITableViewCell {
         nameLabel.text = song.song_name
         authorLabel.text = song.author_name
 //        let roundProcessor = RoundCornerImageProcessor(cornerRadius: 8, targetSize: CGSize(width: 54, height: 54))
-//        iconImageView.kf.setImage(with: URL(string: song.img)!, placeholder: UIColor.createImage(color: .lightGray), options: [.processor(roundProcessor)])
+//        iconImageView.kf.setImage(with: URL(string: song.img)!, placeholder: UIImage(named: "album_placeholder"), options: [.processor(roundProcessor)])
         iconImageView.kf.setImage(with: URL(string: song.img)!, placeholder: UIImage(named: "album_placeholder"))
         
         if song.selected {

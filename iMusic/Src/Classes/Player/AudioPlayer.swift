@@ -181,28 +181,20 @@ class AudioPlayer: NSObject {
     }
     
     func playNext() {
-//        if playMode == .random {
-//            curIndex = randomIndex()
-//        } else {
-            if curIndex < mediaList.count - 1 {
-                curIndex += 1
-            } else {
-                curIndex = 0
-            }
-//        }
+        if curIndex < mediaList.count - 1 {
+            curIndex += 1
+        } else {
+            curIndex = 0
+        }
         playItem(index: curIndex)
     }
     
     func playPrevious() {
-//        if playMode == .random {
-//            curIndex = randomIndex()
-//        } else {
-            if curIndex > 0 {
-                curIndex -= 1
-            } else {
-                curIndex = mediaList.count - 1
-            }
-//        }
+        if curIndex > 0 {
+            curIndex -= 1
+        } else {
+            curIndex = mediaList.count - 1
+        }
         playItem(index: curIndex)
     }
     
