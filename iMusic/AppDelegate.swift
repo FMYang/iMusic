@@ -89,34 +89,7 @@ extension AppDelegate {
     }
 }
 
-extension AppDelegate {
-//    override func remoteControlReceived(with event: UIEvent?) {
-//        if event?.type == .remoteControl {
-//            switch event?.subtype {
-//            case .remoteControlPlay:
-//                AudioPlayer.shared.play()
-//            case .remoteControlPause:
-//                AudioPlayer.shared.pause()
-//            case .remoteControlTogglePlayPause:
-//                AudioPlayer.shared.playOrPause()
-//            case .remoteControlNextTrack:
-//                AudioPlayer.shared.playNext()
-//            case .remoteControlPreviousTrack:
-//                AudioPlayer.shared.playPrevious()
-//            case .remoteControlBeginSeekingForward:
-//                print("BeginSeekingForward")
-//            case .remoteControlEndSeekingForward:
-//                print("EndSeekingForward")
-//            case .remoteControlBeginSeekingBackward:
-//                print("BeginSeekingBackward")
-//            case .remoteControlEndSeekingBackward:
-//                print("EndSeekingBackward")
-//            default:
-//                break
-//            }
-//        }
-//    }
-    
+extension AppDelegate {    
     func createRemoteCommandCenter() {
         let commandCenter = MPRemoteCommandCenter.shared()
         commandCenter.playCommand.addTarget { _ in

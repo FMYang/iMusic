@@ -29,6 +29,8 @@ protocol APITarget {
     
     // 超时时间
     var timeoutInterval: TimeInterval? { get }
+    
+    var sampleData: Data? { get }
 }
 
 extension APITarget {
@@ -45,6 +47,11 @@ extension APITarget {
     }
     
     var timeoutInterval: TimeInterval? {
+        nil
+    }
+    
+    // 本地数据
+    var sampleData: Data? {
         nil
     }
 }
@@ -91,6 +98,26 @@ class APIService {
         // request headers
         let headers = getHeaders(target: target)
         
+        // sampleData
+        if let data = target.sampleData {
+            let publisher = PassthroughSubject<DataResponse<T, AFError>, Never>()
+            
+            let request = try? URLRequest(url: target.host + target.path, method: target.method, headers: headers)
+            do {
+                let item = try JSONDecoder().decode(type, from: data)
+                let response = DataResponse<T, AFError>(request: request, response: nil, data: nil, metrics: nil, serializationDuration: 0.0, result: .success(item))
+                publisher.send(response)
+                publisher.send(completion: .finished)
+                return publisher.eraseToAnyPublisher()
+            } catch {
+                let response = DataResponse<T, AFError>(request: request, response: nil, data: nil, metrics: nil, serializationDuration: 0.0, result: .failure(AFError.responseSerializationFailed(reason: .jsonSerializationFailed(error: error))))
+                publisher.send(response)
+                publisher.send(completion: .finished)
+                return publisher.eraseToAnyPublisher()
+            }
+        }
+        
+        // real request
         return alamofire.request(target.host + target.path,
                                  method: target.method,
                                  parameters: target.params,
@@ -111,7 +138,8 @@ class APIService {
                                       type: T.Type = T.self,
                                       encoding: ParameterEncoding = URLEncoding.default,
                                       interceptor: RequestInterceptor? = nil,
-                                      completionHandler: @escaping (AFDataResponse<T>) -> Void) -> DataRequest {
+                                      completionHandler: @escaping (AFDataResponse<T>) -> Void) -> DataRequest? {
+        
         // timeout
         var modifier: Session.RequestModifier? = nil
         if let timeoutInterval = target.timeoutInterval {
@@ -123,6 +151,21 @@ class APIService {
         // request headers
         let headers = getHeaders(target: target)
         
+        // sampleData
+        if let data = target.sampleData {
+            let request = try? URLRequest(url: target.host + target.path, method: target.method, headers: headers)
+            do {
+                let item = try JSONDecoder().decode(type, from: data)
+                let response = AFDataResponse<T>(request: request, response: nil, data: nil, metrics: nil, serializationDuration: 0.0, result: .success(item))
+                completionHandler(response)
+            } catch {
+                let response = AFDataResponse<T>(request: request, response: nil, data: nil, metrics: nil, serializationDuration: 0.0, result: .failure(AFError.responseSerializationFailed(reason: .jsonSerializationFailed(error: error))))
+                completionHandler(response)
+            }
+            return nil
+        }
+        
+        // real request
         return alamofire.request(target.host + target.path,
                                  method: target.method,
                                  parameters: target.params,

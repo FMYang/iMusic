@@ -169,31 +169,21 @@ class RootVC: UIViewController {
     func loadData() {
         datasource = []
         
-//        activityView.startAnimating()
-//        self.retryButton.isHidden = true
-//        APIService.request1(target: ListAPI.list(source), type: [Song].self) { [weak self] response in
-//            guard let self = self else { return }
-//            switch response.result {
-//            case .success(let songs):
-//                let filterData = songs.filter { $0.is_free_part == 0 && !$0.song_name.isEmpty }
-//                self.datasource = self.filterFile(data: filterData)
-//                self.retryButton.isHidden = true
-//            case .failure(let err):
-//                print(err)
-//                self.retryButton.isHidden = false
-//            }
-//            self.tableView.headRefreshControl?.endRefreshing()
-//            self.activityView.stopAnimating()
-//        }
-        
-        guard let url = Bundle.main.url(forResource: source.rawValue, withExtension: "json"),
-                let jsonData = try? Data(contentsOf: url) else {
-            return
-        }
-        
-        if let data = try? JSONDecoder().decode([Song].self, from: jsonData) {
-            let filterData = data.filter { $0.is_free_part == 0 && !$0.song_name.isEmpty }
-            datasource = filterFile(data: filterData)
+        activityView.startAnimating()
+        self.retryButton.isHidden = true
+        APIService.request1(target: ListAPI.list(source), type: [Song].self) { [weak self] response in
+            guard let self = self else { return }
+            switch response.result {
+            case .success(let songs):
+                let filterData = songs.filter { $0.is_free_part == 0 && !$0.song_name.isEmpty }
+                self.datasource = self.filterFile(data: filterData)
+                self.retryButton.isHidden = true
+            case .failure(let err):
+                print(err)
+                self.retryButton.isHidden = false
+            }
+            self.tableView.headRefreshControl?.endRefreshing()
+            self.activityView.stopAnimating()
         }
         
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.25, execute: {

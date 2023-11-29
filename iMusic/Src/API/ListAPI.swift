@@ -23,4 +23,20 @@ extension ListAPI: APITarget {
             "/FMYang/kugou/-/raw/main/raw/\(source.rawValue).json?ref_type=heads".addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? ""
         }
     }
+    
+    var sampleData: Data? {
+        switch self {
+        case .list(let source):
+//            if source == .channel1 {
+                guard let url = Bundle.main.url(forResource: source.rawValue, withExtension: "json"),
+                      let jsonData = try? Data(contentsOf: url) else {
+                    return nil
+                }
+                
+                return jsonData
+//            } else {
+//                return nil
+//            }
+        }
+    }
 }
