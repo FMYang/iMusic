@@ -55,6 +55,8 @@ class SourceView: UIView {
         case channel40  = "BEYOND"
         case channel41  = "歌手经典歌曲"
         case channel42  = "全部歌曲"
+        
+        case channel100 = "歌手"
     }
     
     class Section {
@@ -70,7 +72,8 @@ class SourceView: UIView {
     
     var datasource: [Section] = []
     
-    var dismiss: ((Source) -> ())?
+    var dismiss: ((Source) -> Void)?
+    var checkSingerClosure: (() -> Void)?
     
     lazy var contentView: UIView = {
         let view = UIView()
@@ -99,7 +102,7 @@ class SourceView: UIView {
         backgroundColor = .black.withAlphaComponent(0.5)
         
         // 全部
-        for i in 0..<5 {
+        for i in 0..<6 {
             let section = Section()
             if i == 0 {
                 section.title = "热门榜单"
@@ -118,9 +121,13 @@ class SourceView: UIView {
                 section.title = "全球榜"
                 let sources: [Source] = [.channel23, .channel24, .channel25, .channel26, .channel27, .channel28, .channel30, .channel31]
                 section.rows = row(sources: sources, type: type)
-            } else {
+            } else if i == 4 {
                 section.title = "全部"
                 let sources: [Source] = [.channel42]
+                section.rows = row(sources: sources, type: type)
+            } else {
+                section.title = "歌手"
+                let sources: [Source] = [.channel100]
                 section.rows = row(sources: sources, type: type)
             }
             datasource.append(section)
@@ -248,14 +255,19 @@ extension SourceView: UITableViewDelegate, UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let section = datasource[indexPath.section]
-        section.rows.forEach { $0.selected = false }
-        let row = section.rows[indexPath.row]
-        row.selected = true
-        tableView.reloadData()
-        
-        self.dismiss?(row.source)
-        removeFromSuperview()
+        if indexPath.section != datasource.count - 1 {
+            let section = datasource[indexPath.section]
+            section.rows.forEach { $0.selected = false }
+            let row = section.rows[indexPath.row]
+            row.selected = true
+            tableView.reloadData()
+            
+            dismiss?(row.source)
+            removeFromSuperview()
+        } else {
+            checkSingerClosure?()
+            removeFromSuperview()
+        }
     }
     
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {

@@ -7,6 +7,7 @@
 
 import Foundation
 
+// 歌曲信息
 class Song: Codable {
     var song_name: String = ""
     var play_url: String = ""
@@ -32,4 +33,25 @@ class Song: Codable {
         case album_audio_id
         case lrc
     }
+}
+
+// 歌手
+class Singer: Codable {
+    var singername: String = ""
+    var imgurl: String = ""
+    var songcount: Int = 0
+    var singerid: UInt32 = 0
+}
+
+// 歌手列表歌曲
+class ListSong: Codable {
+    var data: ListData?
+}
+
+class ListData: Codable {
+    var info: [SongInfo] = []
+}
+
+class SongInfo: Codable {
+    var filename: String = ""
 }

@@ -124,10 +124,18 @@ class RootVC: UIViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        sourceButton.isHidden = false
+        searchButton.isHidden = false
         
         if AudioPlayer.shared.curIndex < datasource.count {
             tableView.scrollToRow(at: IndexPath(row: AudioPlayer.shared.curIndex, section: 0), at: .middle, animated: false)
         }
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        sourceButton.isHidden = true
+        searchButton.isHidden = true
     }
     
     func configNavation() {
@@ -230,6 +238,10 @@ class RootVC: UIViewController {
                 AudioPlayer.shared.clearPlayingInfo()
                 self?.source = source
             }
+        }
+        sourceView.checkSingerClosure = { [weak self] in
+            let vc = SingerVC()
+            self?.navigationController?.pushViewController(vc, animated: true)
         }
         sourceView.tag = 1001
         navigationController?.view.addSubview(sourceView)

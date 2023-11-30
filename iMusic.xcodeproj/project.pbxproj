@@ -20,6 +20,8 @@
 		8813B9F32B0B0901002F1F8E /* ListAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8813B9F12B0B0901002F1F8E /* ListAPI.swift */; };
 		8813B9F72B0B0C42002F1F8E /* UIColor+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8813B9F62B0B0C42002F1F8E /* UIColor+Extension.swift */; };
 		8866E0C32B0F21E200DDE73D /* String+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8866E0C22B0F21E200DDE73D /* String+Extension.swift */; };
+		8884503F2B18819200CF32CF /* SongListCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8884503E2B18819200CF32CF /* SongListCell.swift */; };
+		888450412B188A5A00CF32CF /* SingerSearchView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 888450402B188A5A00CF32CF /* SingerSearchView.swift */; };
 		888AFCCC2B0CA79B0024EE2D /* SourceView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 888AFCCB2B0CA79B0024EE2D /* SourceView.swift */; };
 		888AFCCE2B0CA9050024EE2D /* UIView+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 888AFCCD2B0CA9050024EE2D /* UIView+Extension.swift */; };
 		888AFCD02B0CB2270024EE2D /* UIView+HUD.swift in Sources */ = {isa = PBXBuildFile; fileRef = 888AFCCF2B0CB2270024EE2D /* UIView+HUD.swift */; };
@@ -3566,6 +3568,10 @@
 		889AF69F2B15EE50004C5DDE /* 花心 (Live).mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 889AE8FD2B15EE4C004C5DDE /* 花心 (Live).mp3 */; };
 		889AF6A02B15EE50004C5DDE /* 孤雏.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 889AE8FE2B15EE4C004C5DDE /* 孤雏.mp3 */; };
 		889AF6A22B15EEA0004C5DDE /* 全部歌曲.json in Resources */ = {isa = PBXBuildFile; fileRef = 889AF6A12B15EEA0004C5DDE /* 全部歌曲.json */; };
+		889AF6A42B186876004C5DDE /* SingerVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 889AF6A32B186876004C5DDE /* SingerVC.swift */; };
+		889AF6A62B186B61004C5DDE /* SingerCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 889AF6A52B186B61004C5DDE /* SingerCell.swift */; };
+		889AF6A82B186E36004C5DDE /* SongListVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 889AF6A72B186E36004C5DDE /* SongListVC.swift */; };
+		889AF6AA2B186E7A004C5DDE /* singerList.json in Resources */ = {isa = PBXBuildFile; fileRef = 889AF6A92B186E7A004C5DDE /* singerList.json */; };
 		88E4F3422B0C42FC00416A3E /* AudioPlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88E4F3412B0C42FC00416A3E /* AudioPlayer.swift */; };
 		BB35499447167D173E84EDFA /* Pods_iMusic.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0B5CE025747B9106186D026C /* Pods_iMusic.framework */; };
 /* End PBXBuildFile section */
@@ -3588,6 +3594,8 @@
 		8813B9F12B0B0901002F1F8E /* ListAPI.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ListAPI.swift; sourceTree = "<group>"; };
 		8813B9F62B0B0C42002F1F8E /* UIColor+Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIColor+Extension.swift"; sourceTree = "<group>"; };
 		8866E0C22B0F21E200DDE73D /* String+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+Extension.swift"; sourceTree = "<group>"; };
+		8884503E2B18819200CF32CF /* SongListCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SongListCell.swift; sourceTree = "<group>"; };
+		888450402B188A5A00CF32CF /* SingerSearchView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SingerSearchView.swift; sourceTree = "<group>"; };
 		888AFCCB2B0CA79B0024EE2D /* SourceView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SourceView.swift; sourceTree = "<group>"; };
 		888AFCCD2B0CA9050024EE2D /* UIView+Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIView+Extension.swift"; sourceTree = "<group>"; };
 		888AFCCF2B0CB2270024EE2D /* UIView+HUD.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIView+HUD.swift"; sourceTree = "<group>"; };
@@ -7134,6 +7142,10 @@
 		889AE8FD2B15EE4C004C5DDE /* 花心 (Live).mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = "花心 (Live).mp3"; sourceTree = "<group>"; };
 		889AE8FE2B15EE4C004C5DDE /* 孤雏.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = "孤雏.mp3"; sourceTree = "<group>"; };
 		889AF6A12B15EEA0004C5DDE /* 全部歌曲.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "全部歌曲.json"; sourceTree = "<group>"; };
+		889AF6A32B186876004C5DDE /* SingerVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SingerVC.swift; sourceTree = "<group>"; };
+		889AF6A52B186B61004C5DDE /* SingerCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SingerCell.swift; sourceTree = "<group>"; };
+		889AF6A72B186E36004C5DDE /* SongListVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SongListVC.swift; sourceTree = "<group>"; };
+		889AF6A92B186E7A004C5DDE /* singerList.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = singerList.json; sourceTree = "<group>"; };
 		88E4F3412B0C42FC00416A3E /* AudioPlayer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioPlayer.swift; sourceTree = "<group>"; };
 		AED02557CFB8764C46748811 /* Pods-iMusic.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-iMusic.release.xcconfig"; path = "Target Support Files/Pods-iMusic/Pods-iMusic.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -7215,6 +7227,9 @@
 				888AFCD32B0D98B10024EE2D /* ScrollingLabel.swift */,
 				889ADB032B158AEB004C5DDE /* SearchView.swift */,
 				889ADB052B15C11C004C5DDE /* ProgressView.swift */,
+				889AF6A52B186B61004C5DDE /* SingerCell.swift */,
+				8884503E2B18819200CF32CF /* SongListCell.swift */,
+				888450402B188A5A00CF32CF /* SingerSearchView.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -7224,6 +7239,8 @@
 			children = (
 				8813B9E62B07451B002F1F8E /* RootVC.swift */,
 				88902D972B0B672E00E3E0E8 /* LRCVC.swift */,
+				889AF6A32B186876004C5DDE /* SingerVC.swift */,
+				889AF6A72B186E36004C5DDE /* SongListVC.swift */,
 			);
 			path = Controller;
 			sourceTree = "<group>";
@@ -7289,6 +7306,7 @@
 		889ADB072B15ED6C004C5DDE /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				889AF6A92B186E7A004C5DDE /* singerList.json */,
 				889ADB082B15ED6C004C5DDE /* 酷狗雷达榜.json */,
 				889ADB092B15ED6C004C5DDE /* 90后热歌榜.json */,
 				889ADB0A2B15ED6C004C5DDE /* BEYOND.json */,
@@ -13946,6 +13964,7 @@
 				889AF0762B15EE4E004C5DDE /* Tuesday (Radio Edit).mp3 in Resources */,
 				889AF4962B15EE4F004C5DDE /* 遗失的心跳.mp3 in Resources */,
 				889AF5D92B15EE50004C5DDE /* 걱정말아요 그대 (你不要担心).mp3 in Resources */,
+				889AF6AA2B186E7A004C5DDE /* singerList.json in Resources */,
 				889AF5362B15EE4F004C5DDE /* Because of You.mp3 in Resources */,
 				889AF5BA2B15EE50004C5DDE /* 尽量把话说的简短些.mp3 in Resources */,
 				889AF2042B15EE4F004C5DDE /* Glad You Came.mp3 in Resources */,
@@ -14501,6 +14520,8 @@
 			files = (
 				8813B9E72B07451B002F1F8E /* RootVC.swift in Sources */,
 				8813B9F22B0B0901002F1F8E /* APIService.swift in Sources */,
+				888450412B188A5A00CF32CF /* SingerSearchView.swift in Sources */,
+				889AF6A82B186E36004C5DDE /* SongListVC.swift in Sources */,
 				8813B9D62B0743C7002F1F8E /* ViewController.swift in Sources */,
 				88902D912B0B332A00E3E0E8 /* PlayerView.swift in Sources */,
 				8813B9F72B0B0C42002F1F8E /* UIColor+Extension.swift in Sources */,
@@ -14510,6 +14531,7 @@
 				888AFCD02B0CB2270024EE2D /* UIView+HUD.swift in Sources */,
 				8813B9D42B0743C7002F1F8E /* SceneDelegate.swift in Sources */,
 				8813B9EE2B076FC4002F1F8E /* SongCell.swift in Sources */,
+				8884503F2B18819200CF32CF /* SongListCell.swift in Sources */,
 				88902D942B0B442600E3E0E8 /* Constant.swift in Sources */,
 				88902D982B0B672E00E3E0E8 /* LRCVC.swift in Sources */,
 				8866E0C32B0F21E200DDE73D /* String+Extension.swift in Sources */,
@@ -14519,8 +14541,10 @@
 				88E4F3422B0C42FC00416A3E /* AudioPlayer.swift in Sources */,
 				888AFCCE2B0CA9050024EE2D /* UIView+Extension.swift in Sources */,
 				8813B9F32B0B0901002F1F8E /* ListAPI.swift in Sources */,
+				889AF6A42B186876004C5DDE /* SingerVC.swift in Sources */,
 				88902D9D2B0B70BA00E3E0E8 /* Interactor.swift in Sources */,
 				8813B9EC2B076F92002F1F8E /* Song.swift in Sources */,
+				889AF6A62B186B61004C5DDE /* SingerCell.swift in Sources */,
 				88902D9C2B0B70BA00E3E0E8 /* DismissAnimator.swift in Sources */,
 				888AFCCC2B0CA79B0024EE2D /* SourceView.swift in Sources */,
 			);
