@@ -79,6 +79,9 @@ class SingerVC: UIViewController {
         searchView.selectClosure = { [weak self] index in
             guard let self = self else { return }
             self.tableView.scrollToRow(at: IndexPath(row: index, section: 0), at: .middle, animated: true)
+            let singer = datasource[index]
+            let vc = SongListVC(singer: singer)
+            navigationController?.pushViewController(vc, animated: true)
         }
         navigationController?.view.addSubview(searchView)
     }
