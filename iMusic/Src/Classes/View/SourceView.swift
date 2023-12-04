@@ -15,46 +15,48 @@ class SourceView: UIView {
         case channel3   = "蜂鸟流行音乐榜"
         case channel4   = "抖音热歌榜"
         case channel5   = "快手热歌榜"
-        case channel6   = "DJ热歌榜"
+//        case channel6   = "DJ热歌榜"
         case channel7   = "内地榜"
         case channel8   = "香港地区榜"
         case channel9   = "台湾地区榜"
-        case channel10  = "欧美榜"
-        case channel11  = "日本榜"
+//        case channel10  = "欧美榜"
+//        case channel11  = "日本榜"
         
-        case channel12  = "ACG新歌榜"
-        case channel13  = "电音热歌榜"
-        case channel14  = "综艺新歌榜"
-        case channel15  = "说唱先锋榜"
-        case channel16  = "影视金曲榜"
-        case channel17  = "粤语金曲榜"
-        case channel18  = "酷狗音乐人原创榜"
-        case channel19  = "酷狗雷达榜"
+//        case channel12  = "ACG新歌榜"
+//        case channel13  = "电音热歌榜"
+//        case channel14  = "综艺新歌榜"
+//        case channel15  = "说唱先锋榜"
+//        case channel16  = "影视金曲榜"
+//        case channel17  = "粤语金曲榜"
+//        case channel18  = "酷狗音乐人原创榜"
+//        case channel19  = "酷狗雷达榜"
         case channel20  = "80后热歌榜"
         case channel21  = "90后热歌榜"
         case channel22  = "00后热歌榜"
         
-        case channel23  = "美国BillBoard榜"
-        case channel24  = "英国单曲榜"
-        case channel25  = "日本公信榜"
-        case channel26  = "韩国Melon音乐榜"
-        case channel27  = "joox本地热歌榜"
-        case channel28  = "KKBOX风云榜"
-        case channel29  = "日本SPACE SHOWER榜"
-        case channel30  = "Beatport电子舞曲榜"
-        case channel31  = "小语种热歌榜"
+//        case channel23  = "美国BillBoard榜"
+//        case channel24  = "英国单曲榜"
+//        case channel25  = "日本公信榜"
+//        case channel26  = "韩国Melon音乐榜"
+//        case channel27  = "joox本地热歌榜"
+//        case channel28  = "KKBOX风云榜"
+//        case channel29  = "日本SPACE SHOWER榜"
+//        case channel30  = "Beatport电子舞曲榜"
+//        case channel31  = "小语种热歌榜"
         
         case channel32  = "周杰伦专区"
         case channel33  = "我喜欢的"
         case channel34  = "90后网络歌曲榜"
         case channel35  = "许嵩专区"
         case channel36  = "mp3"
-        case channel37  = "xp英文歌单"
+//        case channel37  = "xp英文歌单"
         case channel38  = "xp中文歌单"
         case channel39  = "王力宏"
         case channel40  = "BEYOND"
         case channel41  = "歌手经典歌曲"
         case channel42  = "全部歌曲"
+        
+        case channel50  = "热门歌手代表作"
         
         case channel100 = "歌手"
     }
@@ -102,26 +104,22 @@ class SourceView: UIView {
         backgroundColor = .black.withAlphaComponent(0.5)
         
         // 全部
-        for i in 0..<6 {
+        for i in 0..<5 {
             let section = Section()
             if i == 0 {
                 section.title = "热门榜单"
-                let sources: [Source] = [.channel1, .channel2, .channel3, .channel4, .channel5, .channel6, .channel7,
-                                         .channel8, .channel9, .channel10, .channel11]
+                let sources: [Source] = [.channel1, .channel2, .channel3, .channel4, .channel5, .channel7,
+                                         .channel8, .channel9]
                 section.rows = row(sources: sources, type: type)
             } else if i == 1 {
                 section.title = "我的歌单"
-                let sources: [Source] = [.channel33, .channel34, .channel32, .channel35, .channel36, .channel39, .channel40,.channel41, .channel37, .channel38]
+                let sources: [Source] = [.channel33, .channel34, .channel32, .channel35, .channel36, .channel39, .channel40,.channel41, .channel38, .channel50]
                 section.rows = row(sources: sources, type: type)
             } else if i == 2 {
                 section.title = "特色音乐榜"
-                let sources: [Source] = [.channel12, .channel13, .channel14, .channel15, .channel16, .channel17, .channel18, .channel19, .channel20, .channel21, .channel22]
+                let sources: [Source] = [.channel20, .channel21, .channel22]
                 section.rows = row(sources: sources, type: type)
             } else if i == 3 {
-                section.title = "全球榜"
-                let sources: [Source] = [.channel23, .channel24, .channel25, .channel26, .channel27, .channel28, .channel30, .channel31]
-                section.rows = row(sources: sources, type: type)
-            } else if i == 4 {
                 section.title = "全部"
                 let sources: [Source] = [.channel42]
                 section.rows = row(sources: sources, type: type)

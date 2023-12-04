@@ -334,7 +334,7 @@ class LRCVC: UIViewController {
             make.centerY.equalTo(minTimeLabel)
             make.left.equalTo(minTimeLabel.snp.right).offset(10)
             make.right.equalTo(maxTimeLabel.snp.left).offset(-10)
-            make.height.equalTo(30)
+            make.height.equalTo(40)
         }
         
         clockButton.snp.makeConstraints { make in

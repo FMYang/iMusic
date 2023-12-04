@@ -130,7 +130,8 @@ class SingerSearchView: UIView {
             activityView.startAnimating()
             DispatchQueue.global().async { [weak self] in
                 let result = self?.listData.filter {
-                    $0.singername.range(of: text, options: .caseInsensitive) != nil
+                    $0.singername.range(of: text, options: .caseInsensitive) != nil ||
+                    "\($0.singerid)".range(of: text) != nil
                 }
                 DispatchQueue.main.async { [weak self] in
                     self?.activityView.stopAnimating()

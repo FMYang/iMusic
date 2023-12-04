@@ -97,9 +97,9 @@ class PlayerView: UIView {
             DispatchQueue.main.async {
                 self.playing = model.playerList.mediaPlayer.isPlaying
                 
-                if model.playerList.mediaPlayer.state == .ended {
-                    self.progressView.progress = 0.0
-                }
+//                if model.playerList.mediaPlayer.state == .ended {
+//                    self.progressView.progress = 0.0
+//                }
             }
         }
         
@@ -122,7 +122,7 @@ class PlayerView: UIView {
                     self.lrcLabel.text = lrcLine.text
                 }
                 
-                self.progressView.progress = CGFloat(AudioPlayer.shared.playerList.mediaPlayer.position)
+//                self.progressView.progress = CGFloat(AudioPlayer.shared.playerList.mediaPlayer.position)
             }
         }
         statusObservers.append(timeObserver)
@@ -173,7 +173,7 @@ class PlayerView: UIView {
         addSubview(lrcLabel)
         addSubview(playOrPauseButton)
         addSubview(nextButton)
-        addSubview(progressView)
+//        addSubview(progressView)
         addSubview(tapView)
         
         iconImageView.snp.makeConstraints { make in
@@ -212,10 +212,10 @@ class PlayerView: UIView {
             make.right.equalTo(playOrPauseButton.snp.left).offset(-10)
         }
         
-        progressView.snp.makeConstraints { make in
-            make.left.right.equalTo(lrcLabel)
-            make.bottom.equalToSuperview()
-            make.height.equalTo(2)
-        }
+//        progressView.snp.makeConstraints { make in
+//            make.left.right.equalTo(lrcLabel)
+//            make.bottom.equalToSuperview()
+//            make.height.equalTo(2)
+//        }
     }
 }

@@ -181,19 +181,27 @@ class AudioPlayer: NSObject {
     }
     
     func playNext() {
-        if curIndex < mediaList.count - 1 {
-            curIndex += 1
-        } else {
-            curIndex = 0
+        if playMode == .random {
+            curIndex = randomIndex()
+        } else if playMode == .list {
+            if curIndex < mediaList.count - 1 {
+                curIndex += 1
+            } else {
+                curIndex = 0
+            }
         }
         playItem(index: curIndex)
     }
     
     func playPrevious() {
-        if curIndex > 0 {
-            curIndex -= 1
-        } else {
-            curIndex = mediaList.count - 1
+        if playMode == .random {
+            curIndex = randomIndex()
+        } else if playMode == .list {
+            if curIndex > 0 {
+                curIndex -= 1
+            } else {
+                curIndex = mediaList.count - 1
+            }
         }
         playItem(index: curIndex)
     }
@@ -242,12 +250,8 @@ extension AudioPlayer: VLCMediaPlayerDelegate {
         let state = player.state
         playState = state
         
-        if state == .ended {
-            if playMode == .list {
-                playNext()
-            } else if playMode == .random {
-                playRandom()
-            }
+        if playState == .ended {
+            playNext()
         }
                 
 //        switch state {

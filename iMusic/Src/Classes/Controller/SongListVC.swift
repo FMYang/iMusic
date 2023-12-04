@@ -39,7 +39,7 @@ class SongListVC: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .white
-        title = "\(singer.singername)的歌曲"
+        title = "\(singer.singername)"
         makeUI()
         addRefresh()
         tableView.headRefreshControl.beginRefreshing()

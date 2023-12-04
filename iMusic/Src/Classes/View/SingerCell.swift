@@ -46,7 +46,7 @@ class SingerCell: UITableViewCell {
     }
     
     func config(singer: Singer) {
-        nameLabel.text = singer.singername
+        nameLabel.text = "\(singer.singername) - \(singer.singerid)"
         descriptLabel.text = "歌曲数量\(singer.songcount)首"
         if singer.imgurl.isEmpty == false {
             if let url = URL(string: singer.imgurl.replacingOccurrences(of: "{size}", with: "100")) {
