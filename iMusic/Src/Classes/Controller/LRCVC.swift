@@ -62,6 +62,8 @@ class LRCVC: UIViewController {
         view.separatorStyle = .none
         view.delegate = self
         view.dataSource = self
+        view.showsHorizontalScrollIndicator = false
+        view.showsVerticalScrollIndicator = false
         view.register(UITableViewCell.self, forCellReuseIdentifier: "cell")
         return view
     }()
@@ -297,7 +299,8 @@ class LRCVC: UIViewController {
         tableView.snp.makeConstraints { make in
             make.top.equalToSuperview().offset(200)
             make.bottom.equalToSuperview().offset(-200)
-            make.left.right.equalToSuperview()
+            make.left.equalToSuperview().offset(40)
+            make.right.equalToSuperview().offset(-40)
         }
         
         playOrPauseButton.snp.makeConstraints { make in
@@ -434,6 +437,10 @@ extension LRCVC {
         default:
             break
         }
+    }
+    
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        dismiss(animated: true)
     }
 }
 

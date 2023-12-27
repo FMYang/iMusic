@@ -57,6 +57,7 @@ class SourceView: UIView {
         case channel42  = "全部歌曲"
         
         case channel50  = "热门歌手代表作"
+        case channel51  = "催眠歌单"
         
         case channel100 = "歌手"
     }
@@ -113,7 +114,7 @@ class SourceView: UIView {
                 section.rows = row(sources: sources, type: type)
             } else if i == 1 {
                 section.title = "我的歌单"
-                let sources: [Source] = [.channel33, .channel34, .channel32, .channel35, .channel36, .channel39, .channel40,.channel41, .channel38, .channel50]
+                let sources: [Source] = [.channel33, .channel34, .channel32, .channel35, .channel36, .channel39, .channel40,.channel41, .channel38, .channel50, .channel51]
                 section.rows = row(sources: sources, type: type)
             } else if i == 2 {
                 section.title = "特色音乐榜"

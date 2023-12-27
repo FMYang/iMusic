@@ -81,5 +81,3 @@ extension String {
         return (self as NSString).floatValue
     }
 }
-
-typealias LRCTuple = (start: String, end: String)
