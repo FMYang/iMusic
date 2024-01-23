@@ -1,2 +1,2 @@
 # iMusic
-personal music play
+personal music player
