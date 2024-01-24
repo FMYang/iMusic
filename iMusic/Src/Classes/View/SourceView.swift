@@ -44,12 +44,12 @@ class SourceView: UIView {
 //        case channel30  = "Beatport电子舞曲榜"
 //        case channel31  = "小语种热歌榜"
         
-        case channel32  = "周杰伦专区"
+        case channel32  = "周杰伦"
         case channel33  = "我喜欢的"
         case channel34  = "90后网络歌曲榜"
-        case channel35  = "许嵩专区"
+        case channel35  = "许嵩"
         case channel36  = "mp3"
-//        case channel37  = "xp英文歌单"
+        case channel37  = "xp英文歌单"
         case channel38  = "xp中文歌单"
         case channel39  = "王力宏"
         case channel40  = "BEYOND"
@@ -58,6 +58,8 @@ class SourceView: UIView {
         
         case channel50  = "热门歌手代表作"
         case channel51  = "催眠歌单"
+        case channel52  = "001英文歌单"
+        case channel53  = "合集1"
         
         case channel100 = "歌手"
     }
@@ -114,7 +116,7 @@ class SourceView: UIView {
                 section.rows = row(sources: sources, type: type)
             } else if i == 1 {
                 section.title = "我的歌单"
-                let sources: [Source] = [.channel33, .channel34, .channel32, .channel35, .channel36, .channel39, .channel40,.channel41, .channel38, .channel50, .channel51]
+                let sources: [Source] = [.channel53, .channel33, .channel34, .channel32, .channel35, .channel36, .channel39, .channel40, .channel37, .channel38, .channel50, .channel51, .channel52]
                 section.rows = row(sources: sources, type: type)
             } else if i == 2 {
                 section.title = "特色音乐榜"

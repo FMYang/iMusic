@@ -120,6 +120,10 @@ class RootVC: UIViewController {
 //        addRefresh()
         addKVO()
         source = localSource
+        
+        let ges = UISwipeGestureRecognizer(target: self, action: #selector(sourceAction))
+        ges.direction = .right
+        view.addGestureRecognizer(ges)
     }
     
     override func viewWillAppear(_ animated: Bool) {

@@ -385,7 +385,12 @@ extension LRCVC: UITableViewDelegate, UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        
+        let line = datasource[indexPath.row]
+        let totalTime = Float(AudioPlayer.shared.curSong.timelength) / 1000.0
+        let time = Float(CMTimeGetSeconds(line.time))
+        var position = time / totalTime
+        if position > 0.99 { position = 0.99 }
+        AudioPlayer.shared.seek(position: position)
     }
 }
 
