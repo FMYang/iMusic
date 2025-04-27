@@ -8,7 +8,7 @@
 import Foundation
 
 // 歌曲信息
-class Song: Codable {
+class Song: Codable, Equatable {
     var song_name: String = ""
     var play_url: String = ""
     var timelength: Int = 0
@@ -18,6 +18,7 @@ class Song: Codable {
     var img: String = ""
     var album_audio_id: Int64 = 0
     var lrc: String = ""
+    var isCollect: Bool = false
     
     // ignore the key
     var selected: Bool = false
@@ -32,6 +33,11 @@ class Song: Codable {
         case img
         case album_audio_id
         case lrc
+    }
+    
+    // 用于判断对象是否相等（删除时需要）
+    static func == (lhs: Song, rhs: Song) -> Bool {
+        return lhs.album_audio_id == rhs.album_audio_id
     }
 }
 

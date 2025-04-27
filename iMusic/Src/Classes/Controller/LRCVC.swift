@@ -12,7 +12,8 @@ import MediaPlayer
 class LRCVC: UIViewController {
     
     var statusObservers: [NSKeyValueObservation?] = []
-    
+    var collectionClosure: (() -> Void)?
+
     var interactor:Interactor? = nil
     var isDraging: Bool = false
     var datasource: [LRCLine] = [] {
@@ -32,6 +33,15 @@ class LRCVC: UIViewController {
             }
         }
     }
+
+    lazy var collectionBtn: UIButton = {
+        let btn = UIButton()
+        btn.setImage(UIImage(named: "icon_collection_normal"), for: .normal)
+        btn.setImage(UIImage(named: "icon_collection_select"), for: .selected)
+        btn.addTarget(self, action: #selector(collectAction), for: .touchUpInside)
+        btn.imageEdgeInsets = UIEdgeInsets(top: 10, left: 10, bottom: 10, right: 10)
+        return btn
+    }()
     
     lazy var backButton: UIButton = {
         let btn = UIButton()
@@ -159,6 +169,7 @@ class LRCVC: UIViewController {
         loadData(song: AudioPlayer.shared.curSong)
         addKVO()
         updateClockButton()
+        collectionBtn.isSelected = AudioPlayer.shared.curSong.isCollect
     }
     
     override var preferredStatusBarStyle: UIStatusBarStyle {
@@ -224,6 +235,18 @@ class LRCVC: UIViewController {
     }
     
     // MARK: - action
+    @objc func collectAction() {
+        collectionBtn.isSelected = !collectionBtn.isSelected
+        var song = AudioPlayer.shared.curSong
+        song.isCollect = collectionBtn.isSelected
+        if (song.isCollect) {
+            CollectionDataManager.shared.add(song: song)
+        } else {
+            CollectionDataManager.shared.delete(song: song)
+        }
+        collectionClosure?()
+    }
+    
     @objc func backAction() {
         dismiss(animated: true)
     }
@@ -285,6 +308,7 @@ class LRCVC: UIViewController {
         view.addSubview(clockButton)
         view.addSubview(playModeButton)
         view.addSubview(noDataLabel)
+        view.addSubview(collectionBtn)
         
         backgroundView.snp.makeConstraints { make in
             make.edges.equalToSuperview()
@@ -294,6 +318,12 @@ class LRCVC: UIViewController {
             make.top.equalToSuperview().offset(kSafeAreaInsets.top)
             make.left.equalToSuperview().offset(10)
             make.width.height.equalTo(44)
+        }
+        
+        collectionBtn.snp.makeConstraints { make in
+            make.centerY.equalTo(backButton)
+            make.width.height.equalTo(44)
+            make.right.equalToSuperview().offset(-20)
         }
         
         tableView.snp.makeConstraints { make in

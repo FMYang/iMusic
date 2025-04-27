@@ -10,6 +10,7 @@ import UIKit
 class SourceView: UIView {
     
     enum Source: String, CaseIterable {
+        case channel0   = "我的收藏"
         case channel1   = "酷狗飙升榜"
         case channel2   = "top500"
         case channel3   = "蜂鸟流行音乐榜"
@@ -58,8 +59,10 @@ class SourceView: UIView {
         
         case channel50  = "热门歌手代表作"
         case channel51  = "催眠歌单"
-        case channel52  = "001英文歌单"
-        case channel53  = "合集1"
+        case channel52  = "fm英文歌单"
+        case channel53  = "合集"
+        case channel54  = "精选"
+        case channel55  = "气氛组"
         
         case channel100 = "歌手"
     }
@@ -107,22 +110,26 @@ class SourceView: UIView {
         backgroundColor = .black.withAlphaComponent(0.5)
         
         // 全部
-        for i in 0..<5 {
+        for i in 0..<6 {
             let section = Section()
             if i == 0 {
+                section.title = "我的收藏"
+                let sources: [Source] = [.channel0]
+                section.rows = row(sources: sources, type: type)
+            } else if i == 1 {
                 section.title = "热门榜单"
                 let sources: [Source] = [.channel1, .channel2, .channel3, .channel4, .channel5, .channel7,
                                          .channel8, .channel9]
                 section.rows = row(sources: sources, type: type)
-            } else if i == 1 {
-                section.title = "我的歌单"
-                let sources: [Source] = [.channel53, .channel33, .channel34, .channel32, .channel35, .channel36, .channel39, .channel40, .channel37, .channel38, .channel50, .channel51, .channel52]
-                section.rows = row(sources: sources, type: type)
             } else if i == 2 {
+                section.title = "我的歌单"
+                let sources: [Source] = [.channel55, .channel54, .channel53, .channel33, .channel34, .channel32, .channel35, .channel36, .channel39, .channel40, .channel37, .channel38, .channel50, .channel51, .channel52]
+                section.rows = row(sources: sources, type: type)
+            } else if i == 3 {
                 section.title = "特色音乐榜"
                 let sources: [Source] = [.channel20, .channel21, .channel22]
                 section.rows = row(sources: sources, type: type)
-            } else if i == 3 {
+            } else if i == 4 {
                 section.title = "全部"
                 let sources: [Source] = [.channel42]
                 section.rows = row(sources: sources, type: type)

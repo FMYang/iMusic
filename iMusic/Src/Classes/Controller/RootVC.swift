@@ -61,6 +61,11 @@ class RootVC: UIViewController {
         view.iconTapClosure = { [weak self] in
             guard let self = self else { return }
             let vc = LRCVC()
+            vc.collectionClosure = { [weak self] in
+                if self?.source == .channel0 {
+                    self?.loadData()
+                }
+            }
             vc.transitioningDelegate = self
             vc.interactor = self.interactor
             vc.modalPresentationStyle = .fullScreen
@@ -123,7 +128,7 @@ class RootVC: UIViewController {
         
         let ges = UISwipeGestureRecognizer(target: self, action: #selector(sourceAction))
         ges.direction = .right
-        view.addGestureRecognizer(ges)
+        view.addGestureRecognizer(ges)        
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -181,6 +186,18 @@ class RootVC: UIViewController {
     func loadData() {
         datasource = []
         
+        if source == .channel0 {
+            datasource = CollectionDataManager.shared.getAllPersons()
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.25, execute: {
+                self.datasource.forEach { $0.selected = false }
+                self.tableView.reloadData()
+                if self.datasource.count > 0 {
+                    self.tableView.scrollToRow(at: IndexPath(row: 0, section: 0), at: .top, animated: true)
+                }
+            })
+            return
+        }
+        
         activityView.startAnimating()
         self.retryButton.isHidden = true
         APIService.request1(target: ListAPI.list(source), type: [Song].self) { [weak self] response in
@@ -200,7 +217,9 @@ class RootVC: UIViewController {
         
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.25, execute: {
             self.tableView.layoutIfNeeded()
-            self.tableView.scrollToRow(at: IndexPath(row: 0, section: 0), at: .top, animated: true)
+            if self.datasource.count > 0 {
+                self.tableView.scrollToRow(at: IndexPath(row: 0, section: 0), at: .top, animated: true)
+            }
         })
     }
     
@@ -327,9 +346,17 @@ extension RootVC: UITableViewDelegate, UITableViewDataSource {
 
 extension RootVC {
     func play(index: Int) {
+        let song = datasource[index]
         songView.isHidden = false
-        songView.config(song: datasource[index])
+        songView.config(song: song)
         AudioPlayer.shared.playItem(index: index)
+        
+        let collectionSongs = CollectionDataManager.shared.getAllPersons()
+        collectionSongs.forEach { s in
+            if song.album_audio_id == s.album_audio_id {
+                song.isCollect = true
+            }
+        }
     }
 }
 
